@@ -1,92 +1,65 @@
 #include <algorithm>
+#include <emscripten.h>
+#include <emscripten/val.h>
 
 #include "taskchecker.h"
-#include "taskinit.h"
+
+EM_ASYNC_JS(emscripten::EM_VAL, jsGetTasks, (),
+{
+	let json = await get_task_list();
+	return Emval.toHandle(json);
+});
+
+EM_ASYNC_JS(char*, jsSendSolution, (const char* program, int pr_len, int t_id),
+{
+	let answer = send_solution(UTF8ToString(program, pr_len), t_id);
+	return stringToNewUTF8(answer);
+});
+
+Task::Task(std::string title, std::string text, unsigned int id)
+{
+    this->title = title;
+    this->text = text;
+    this->id = id;
+}
 
 TaskChecker::TaskChecker()
 {
-    setTasks();
-    setSections();
+    emscripten::val em_json = emscripten::val::take_ownership(jsGetTasks());
+    for (int i = 0; i < em_json["len"].as<int>(); i++){
+    	std::string i_s = std::to_string(i);
+    	this->tasks.push_back(Task(em_json["tasks"][i_s]["title"].as<std::string>(), em_json["tasks"][i_s]["text"].as<std::string>(), em_json["tasks"][i_s]["id"].as<unsigned int>()));
+    }
 }
 
-TaskChecker::~TaskChecker()
+std::string TaskChecker::checkTask(QString program, unsigned int t_id)
 {
-        
+    char *tmp = jsSendSolution(program.toStdString().c_str(), program.toStdString().length(), t_id);
+    std::string answer(tmp);
+    free(tmp);
+    return answer;
 }
 
-std::string TaskChecker::checkTask(QString program, unsigned int section, unsigned int number)
+std::string TaskChecker::findTask(unsigned int t_id)
 {
     auto check = [section, number](const Task& task) {
-        return section == task.getSection() && number == task.getNumber();
-    };
-    auto taskIt = find_if(this->tasks.begin(), this->tasks.end(), check);
-
-    if (taskIt !=  tasks.end() ){
-        bool passed = true;
-        std::string curAnswer;
-        auto testIt = taskIt->getTests().begin();
-
-        while(testIt != taskIt->getTests().end() && passed){
-	    TestCase test = (*testIt);
-            if(test.getType() == TestType::returnValue){
-                passed = checkReturnVal(program, test.getInput(), test.getOutput(), curAnswer);
-            } else {
-                passed = checkPrintVal(program, test.getInput(), test.getOutput(), curAnswer);
-            }
-            testIt++;
-        }
-        return curAnswer;
-    }
-    return "No task with these numbers\n";
-}
-
-void TaskChecker::setTasks()
-{
-    this->tasks = createTaskList();
-}
-
-void TaskChecker::setSections()
-{
-    this->sections = createSectionNames();
-}
-
-bool TaskChecker::checkPrintVal(QString program, std::string input, std::string output, std::string &answer)
-{
-    answer = "tests havent been implemented yet \n";
-    return true;
-}
-
-bool TaskChecker::checkReturnVal(QString program, std::string input, std::string output, std::string &answer)
-{
-    answer = "tests havent been implemented yet \n";
-    return true;
-}
-
-unsigned int TaskChecker::getSectionNum() const{
-    return sections.size();
-}
-
-std::vector<unsigned int> TaskChecker::getSectionTasks(unsigned int section) const
-{
-    std::vector<unsigned int> sectionTaskNums;
-    for (const Task& task : tasks){
-        if(task.getSection() == section){
-            sectionTaskNums.push_back(task.getNumber());
-        }
-    }
-    return sectionTaskNums;
-}
-
-Task* TaskChecker::findTask(unsigned int section, unsigned int number)
-{
-     auto check = [section, number](const Task& task) {
-        return section == task.getSection() && number == task.getNumber();
+        return t_id == task.id;
     };
 
     auto taskIt = find_if(this->tasks.begin(), this->tasks.end(), check);
 
     if (taskIt != tasks.end()){
-        return &(*taskIt);
+        return taskIt->text;
     }
-    return nullptr;    
+    return std::string("task wasnt found\n");    
+}
+
+std::vector<Task> TaskChecker::getTasks() const
+{
+	return tasks;
+}
+
+TaskChecker::~TaskChecker()
+{
+        
 }
