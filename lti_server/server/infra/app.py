@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_cors import CORS, cross_origin
+from task_processing import *
 
 app = Flask(
     __name__,
@@ -53,6 +54,17 @@ def lti_route():
         return redirect(url_for('index', task_id=task_id))
     else:
         abort(403)
+
+
+@app.route("/check", methods=['POST'])
+def check_answer():
+    ans = request.json
+    return check_res(ans.get('user'), ans.get('task'), ans.get('solution'))
+
+
+@app.route("/tasks", methods=['GET'])
+def ret_tasks():
+    return get_tasks()
 
 
 app.run(host='0.0.0.0')
