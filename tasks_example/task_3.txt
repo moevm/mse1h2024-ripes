@@ -1,0 +1,2 @@
+3)На вход подается число в 10чной системе счисления. Необходимо посчитать количество нулей и единиц в его двоичной вариации. Ответом будет отношение большего к меньшему, округленного в большую сторону до целого.
+3)The input is a number in the 10th number system. It is necessary to calculate the number of zeros and ones in its binary variation. The answer is a ratio of more to less, rounded up to the whole.
