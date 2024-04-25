@@ -12,9 +12,6 @@
  - Обработка request от moodle
  - Первый прототит
 
-*Пример отображения заданий
-![example2](https://github.com/moevm/mse1h2024-ripes/blob/master/resources/images/example2.jpeg)
-
 ## Итерация 3
 [Презентация](https://github.com/moevm/mse1h2024-ripes/blob/master/Ripes3.pdf)
 
