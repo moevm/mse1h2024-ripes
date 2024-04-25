@@ -1,0 +1,2 @@
+1)На вход подается число. Необходимо возвести его в степень равную половине этого числа, округленного в большую сторону.
+1)The input is a number. It must be raised to a power equal to half of this number rounded upwards.
