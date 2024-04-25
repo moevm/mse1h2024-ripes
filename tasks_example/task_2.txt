@@ -1,0 +1,2 @@
+2)На вход подается число n. Необходимо вывести каждое 3 и 7 число от 0 до n.
+2)The input is given by the number n. It is necessary to print every 3 and 7 numbers from 0 to n.
