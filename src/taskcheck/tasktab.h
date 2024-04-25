@@ -13,9 +13,8 @@ class TaskTab;
 class TaskTab : public RipesTab {
   Q_OBJECT
 
-public slots:
-  void changeSection();
-  void changeTask();
+private slots:
+  void showTask();
   void checkTask();
 
 public:
@@ -23,8 +22,7 @@ public:
   ~TaskTab() override;
 
 private:
-  unsigned int currentNumber;
-  unsigned int currentSection;
+  unsigned int currentTaskId;
   TaskChecker taskchecker;
   EditTab* edittab;
   Ui::TaskTab *m_ui = nullptr;  
