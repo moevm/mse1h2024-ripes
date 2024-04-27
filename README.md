@@ -12,6 +12,13 @@
  - Обработка request от moodle
  - Первый прототит
 
+#### Инструкция по сборке
+```bash
+cd lti_server/
+docker build -t lti_server -f Containerfile
+docker run -p 5000:5000 lti_server:latest
+```
+
 ## Итерация 3
 [Презентация](https://github.com/moevm/mse1h2024-ripes/blob/master/Ripes3.pdf)
 
