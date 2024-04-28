@@ -38,7 +38,9 @@ class MainWindow : public QMainWindow {
     CacheTabID,
     MemoryTabID,
     IOTabID,
+    #ifdef Q_OS_WASM
     TaskTabID,
+    #endif
     NTabsID
   };
 

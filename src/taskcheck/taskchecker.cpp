@@ -12,8 +12,9 @@ EM_ASYNC_JS(emscripten::EM_VAL, jsGetTasks, (),
 
 EM_ASYNC_JS(char*, jsSendSolution, (const char* program, int pr_len, int t_id),
 {
-	let answer = send_solution(UTF8ToString(program, pr_len), t_id);
-	return stringToNewUTF8(answer);
+	let answer = await send_solution(UTF8ToString(program, pr_len), t_id);
+	let str = answer["answer"];
+	return stringToNewUTF8(str);
 });
 
 Task::Task(std::string title, std::string text, unsigned int id)
@@ -25,11 +26,7 @@ Task::Task(std::string title, std::string text, unsigned int id)
 
 TaskChecker::TaskChecker()
 {
-    emscripten::val em_json = emscripten::val::take_ownership(jsGetTasks());
-    for (int i = 0; i < em_json["len"].as<int>(); i++){
-    	std::string i_s = std::to_string(i);
-    	this->tasks.push_back(Task(em_json["tasks"][i_s]["title"].as<std::string>(), em_json["tasks"][i_s]["text"].as<std::string>(), em_json["tasks"][i_s]["id"].as<unsigned int>()));
-    }
+   
 }
 
 std::string TaskChecker::checkTask(QString program, unsigned int t_id)
@@ -42,7 +39,7 @@ std::string TaskChecker::checkTask(QString program, unsigned int t_id)
 
 std::string TaskChecker::findTask(unsigned int t_id)
 {
-    auto check = [section, number](const Task& task) {
+    auto check = [t_id](const Task& task) {
         return t_id == task.id;
     };
 
@@ -54,9 +51,15 @@ std::string TaskChecker::findTask(unsigned int t_id)
     return std::string("task wasnt found\n");    
 }
 
-std::vector<Task> TaskChecker::getTasks() const
+std::vector<Task> TaskChecker::getTasks()
 {
-	return tasks;
+	emscripten::val em_json = emscripten::val::take_ownership(jsGetTasks());
+    for (int i = 0; i < em_json["len"].as<int>(); i++){
+    	std::string i_s = std::to_string(i);
+    	this->tasks.push_back(Task(em_json["tasks"][i_s]["title"].as<std::string>(),
+		 em_json["tasks"][i_s]["text"].as<std::string>(), em_json["tasks"][i_s]["id"].as<unsigned int>()));    
+    }
+    return tasks;
 }
 
 TaskChecker::~TaskChecker()

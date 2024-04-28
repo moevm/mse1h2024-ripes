@@ -27,12 +27,6 @@ TaskTab::TaskTab(QToolBar *toolbar, EditTab *edittab, QWidget *parent)
 	m_ui->answerText->setReadOnly(true);
 	m_ui->checkButton->setEnabled(false);
 	
-	std::vector<Task> tasks = taskchecker.getTasks();
-
-	for (unsigned int i = 0; i < tasks.size(); i++){
-		m_ui->taskBox->addItem(QString::fromStdString(std::to_string(tasks[i].id) + ": " + tasks[i].title), tasks[i].id);
-	}
-
 }
 
 TaskTab::~TaskTab() { delete m_ui; }
@@ -60,6 +54,16 @@ void TaskTab::changeTask()
 		m_ui->checkButton->setEnabled(true);
 	} else {
 		m_ui->checkButton->setEnabled(false);
+	}	
+}
+
+void TaskTab::addTasksToTab(){
+	if(m_ui->taskBox->count() == 0){
+		std::vector<Task>tasks = taskchecker.getTasks();
+
+		for (unsigned int i = 0; i < tasks.size(); i++){
+			m_ui->taskBox->addItem(QString::fromStdString(std::to_string(tasks[i].id) + ": "+ tasks[i].title), tasks[i].id);
+		}
 	}	
 }
 }

@@ -13,6 +13,9 @@ class TaskTab;
 class TaskTab : public RipesTab {
   Q_OBJECT
 
+public slots:
+  void addTasksToTab();  
+
 private slots:
   void showTask();
   void checkTask();
