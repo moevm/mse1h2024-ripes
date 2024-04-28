@@ -8,7 +8,9 @@
 #include "memorytab.h"
 #include "processorhandler.h"
 #include "processortab.h"
+#ifdef Q_OS_WASM
 #include "taskcheck/tasktab.h"
+#endif
 #include "registerwidget.h"
 #include "ripessettings.h"
 #include "savedialog.h"
@@ -92,12 +94,14 @@ MainWindow::MainWindow(QWidget *parent)
   m_stackedTabs->insertWidget(IOTabID, IOTab);
   m_tabWidgets[IOTabID] = {IOTab, IOToolbar};
   
+  #ifdef Q_OS_WASM
   auto *taskToolbar = addToolBar("Task");
   taskToolbar->setVisible(false);
   auto *taskTab = new TaskTab(taskToolbar, editTab, this);
   m_stackedTabs->insertWidget(TaskTabID, taskTab);
   m_tabWidgets[TaskTabID] = {taskTab, taskToolbar};
-
+  #endif
+  
   // Setup tab bar
   m_ui->tabbar->addFancyTab(QIcon(":/icons/binary-code.svg"), "Editor");
   m_ui->tabbar->addFancyTab(QIcon(":/icons/cpu.svg"), "Processor");
@@ -111,6 +115,11 @@ MainWindow::MainWindow(QWidget *parent)
           &QStackedWidget::setCurrentIndex);
   connect(m_ui->tabbar, &FancyTabBar::activeIndexChanged, editTab,
           &EditTab::updateProgramViewerHighlighting);
+  #ifdef Q_OS_WASM
+  m_ui->tabbar->addFancyTab(QIcon(":/icons/task.svg"), "Task");
+  connect(m_ui->tabbar, &FancyTabBar::activeIndexChanged, taskTab,
+          &TaskTab::addTasksToTab);   
+  #endif          
   setupMenus();
 
   // setup and connect widgets
