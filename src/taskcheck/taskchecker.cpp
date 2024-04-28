@@ -39,7 +39,7 @@ std::string TaskChecker::checkTask(QString program, unsigned int t_id)
 
 std::string TaskChecker::findTask(unsigned int t_id)
 {
-    auto check = [section, number](const Task& task) {
+    auto check = [t_id](const Task& task) {
         return t_id == task.id;
     };
 
