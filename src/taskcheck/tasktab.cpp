@@ -45,12 +45,12 @@ void TaskTab::checkTask()
 	m_ui->answerText->setPlainText(QString::fromStdString(answer));
 }
 
-void TaskTab::changeTask()
+void TaskTab::showTask()
 {
 	if(m_ui->taskBox->currentIndex() > -1){
 		currentTaskId = m_ui->taskBox->itemData(m_ui->taskBox->currentIndex()).toUInt();
 		std::string txt = taskchecker.findTask(currentTaskId);
-		m_ui->taskText->setPlainText(QString::fromStdString(txt);
+		m_ui->taskText->setPlainText(QString::fromStdString(txt));
 		m_ui->checkButton->setEnabled(true);
 	} else {
 		m_ui->checkButton->setEnabled(false);
