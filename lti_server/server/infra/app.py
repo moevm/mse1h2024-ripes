@@ -59,7 +59,7 @@ def lti_route():
 @app.route("/check", methods=['POST'])
 def check_answer():
     ans = request.json
-    return check_res(ans.get('user'), ans.get('task'), ans.get('solution'))
+    return {"answer": check_submit(ans.get('user'), ans.get('task'), ans.get('solution'))}
 
 
 @app.route("/tasks", methods=['GET'])
