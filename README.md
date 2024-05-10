@@ -13,7 +13,7 @@
  - Первый прототит
 
 #### Инструкция по сборке
-
+[Инструкция](https://github.com/moevm/mse1h2024-ripes/blob/docker_fix/instruction.md)
 
 ## Итерация 3
 [Презентация](https://github.com/moevm/mse1h2024-ripes/blob/master/Ripes3.pdf)
