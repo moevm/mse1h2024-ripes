@@ -12,7 +12,7 @@ EM_ASYNC_JS(emscripten::EM_VAL, jsGetTasks, (),
 
 EM_ASYNC_JS(char*, jsSendSolution, (const char* program, int pr_len, int t_id),
 {
-	let answer = await send_solution(UTF8ToString(program, pr_len), t_id);
+	let answer = await send_solution(UTF8ToString(program, pr_len), UTF8ToString(condition, cond_len), t_id);
 	let str = answer["answer"];
 	return stringToNewUTF8(str);
 });
@@ -31,7 +31,8 @@ TaskChecker::TaskChecker()
 
 std::string TaskChecker::checkTask(QString program, unsigned int t_id)
 {
-    char *tmp = jsSendSolution(program.toStdString().c_str(), program.toStdString().length(), t_id);
+    std::string condition = findTask(t_id);
+    char *tmp = jsSendSolution(program.toStdString().c_str(), condition.c_str(), program.toStdString().length(), condition.length(), t_id);
     std::string answer(tmp);
     free(tmp);
     return answer;
