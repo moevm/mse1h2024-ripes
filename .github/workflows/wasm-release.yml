@@ -100,3 +100,16 @@ jobs:
           Ripes.worker.js
           qtloader.js
 
+    - name: continuous release
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/master' && matrix.build-type == 'Release'
+      with:
+        prerelease: true
+        files: |
+          Ripes.wasm
+          Ripes.js
+          Ripes.worker.js
+          qtloader.js
+        tag_name: continuous
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
