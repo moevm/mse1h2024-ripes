@@ -10,7 +10,7 @@ EM_ASYNC_JS(emscripten::EM_VAL, jsGetTasks, (),
 	return Emval.toHandle(json);
 });
 
-EM_ASYNC_JS(char*, jsSendSolution, (const char* program, int pr_len, int t_id),
+EM_ASYNC_JS(char*, jsSendSolution, (const char* program, const char* condition, int pr_len, int cond_len, int t_id),
 {
 	let answer = await send_solution(UTF8ToString(program, pr_len), UTF8ToString(condition, cond_len), t_id);
 	let str = answer["answer"];
